@@ -1,0 +1,239 @@
+function calcular(){
+  
+  var sheet=SpreadsheetApp.getActiveSpreadsheet()
+  var row=sheet.getActiveCell().getRow();
+
+  var forma=sheet.getRange("F"+row).getValue();
+
+  // Forma A
+
+  var uno=sheet.getRange("G"+row).getValue();
+  var dos=sheet.getRange("H"+row).getValue();
+  var tres=sheet.getRange("I"+row).getValue();
+  var cuatro=sheet.getRange("J"+row).getValue();
+  var cinco=sheet.getRange("K"+row).getValue();
+
+  // Forma B
+
+  var seis=sheet.getRange("L"+row).getValue();
+  var siete=sheet.getRange("M"+row).getValue();
+  var ocho=sheet.getRange("N"+row).getValue();
+  var nueve=sheet.getRange("O"+row).getValue();
+  var diez=sheet.getRange("P"+row).getValue();
+
+ // Análisis Forma A
+
+ if(String.substring(forma,0,1)=="A"){
+
+  var puntos=0;
+  
+  if(String.substring(uno,0,1)=="d"){
+    puntos=puntos+1;
+  }
+
+  if(String.substring(dos,0,1)=="a"){
+    puntos=puntos+1;
+  }
+
+  if(String.substring(tres,0,1)=="c"){
+    puntos=puntos+1;
+  }
+
+  if(String.substring(cuatro,0,1)=="d"){
+    puntos=puntos+1;
+  }
+
+  if(String.substring(cinco,0,1)=="c"){
+    puntos=puntos+1;
+  }
+
+  var exigencia=60;
+  var intr=1.00;
+  var inta=1.50;
+   
+  var pto=puntos;
+   
+  if(pto==0){
+   		var nota = 1;
+   
+        sheet.getRange("Q"+row).setValue(nota);
+  }
+  
+  if (pto<3 && pto!=0){
+        var nota = 1;
+    
+          for(i=1;i <= pto;i++){
+      
+             nota = nota + intr;
+             
+         } 
+    sheet.getRange("Q"+row).setValue(nota);
+ } 
+   
+  if(pto==3){
+     
+      var nota = 4;
+      
+      sheet.getRange("Q"+row).setValue(nota);
+  } 
+   
+  if(pto>3 && pto<=5){
+      var nota = 4;
+    
+      for(i=4;i <= pto;i++){
+      
+      nota = nota + inta;
+      
+      }
+    
+    sheet.getRange("Q"+row).setValue(nota);
+    } 
+  
+  color(nota);
+
+  enviarCorreo(nota,pto,forma);
+
+  }
+
+// Análisis Forma B
+
+  if(String.substring(forma,0,1)=="B"){
+
+  var puntos=0;
+ 
+  if(String.substring(seis,0,1)=="b"){
+    puntos=puntos+1;
+  }
+
+  if(String.substring(siete,0,1)=="d"){
+    puntos=puntos+1;
+  }
+
+  if(String.substring(ocho,0,1)=="e"){
+    puntos=puntos+1;
+  }
+
+  if(String.substring(nueve,0,1)=="e"){
+    puntos=puntos+1;
+  }
+
+  if(String.substring(diez,0,1)=="e"){
+    puntos=puntos+1;
+  }
+
+  var exigencia=60;
+  var intr=1.00;
+  var inta=1.50;
+   
+  var pto=puntos;
+  
+    
+  if(pto==0){
+   		var nota = 1;
+   
+        sheet.getRange("Q"+row).setValue(nota);
+  }
+  
+  if (pto<3 && pto!=0){
+        var nota = 1;
+    
+          for(i=1;i <= pto;i++){
+      
+             nota = nota + intr;
+             
+         } 
+    sheet.getRange("Q"+row).setValue(nota);
+ } 
+   
+  if(pto==3){
+     
+      var nota = 4;
+      
+      sheet.getRange("Q"+row).setValue(nota);
+  } 
+   
+  if(pto>3 && pto<=15){
+      var nota = 4;
+    
+      for(i=4;i <= pto;i++){
+      
+      nota = nota + inta;
+      
+      }
+    
+    sheet.getRange("Q"+row).setValue(nota);
+    } 
+  
+  color(nota);
+
+  enviarCorreo(nota,pto,forma);
+
+
+  }
+
+ 
+}
+
+function enviarCorreo(nota,pto,forma){
+
+    var sheet=SpreadsheetApp.getActiveSpreadsheet();
+    var row=sheet.getActiveCell().getRow();
+
+  
+    var nome=sheet.getRange("B"+row).getValue();
+    var nome1=String.substring(nome,0,50);
+  
+    var califica=(nota).toFixed(2);
+  
+  var recipient=sheet.getRange("D"+row).getValue();
+
+  var subject="Resultados Evaluación U1: Números Reales";
+ 
+  var body="Su nota es: "+califica +". Su puntaje es: "+pto + ". Fila: "+forma;
+  
+
+  if(califica>=4){
+    var logro=". Muy bien, lograste el objetivo de la evaluación.";
+    
+    var message = "<HTML><BODY>"
+   + "<P>" + " Resultados."
+   + "<P>" + " Estimado(a), "+nome1+"."
+   + "<P>" + " Su fila fue: "+forma+"."
+   + "<P>" + " Su puntaje fue: "+pto+"."
+   + "<P>" + " Su nota es: "+califica+"."
+   + "<P>" + " Muchas gracias."
+   + "<P>" + " Fracisco Larrea S."
+   + "</HTML></BODY>";
+    
+  }else{
+    var logro=". Debes aclarar tus dudas y hacer más ejercicios.";
+    
+     var message = "<HTML><BODY>"
+   + "<P>" + " Resultados."
+   + "<P>" + " Estimado(a), "+nome1+"."
+   + "<P>" + " Su fila fue: "+forma+"."
+   + "<P>" + " Su puntaje fue: "+pto+"."
+   + "<P>" + " Su nota es: "+califica+"."
+   + "<P>" + " Muchas gracias."
+   + "<P>" + " Fracisco Larrea S."
+   + "</HTML></BODY>";
+    
+  }
+
+  MailApp.sendEmail(recipient, subject, body, {htmlBody: message});
+}
+
+function color(e){
+  var sheet=SpreadsheetApp.getActiveSpreadsheet();
+  var row=sheet.getActiveCell().getRow();
+    if(e>=4){
+    sheet.getRange("Q"+row).setFontColor("blue");
+  }else{
+    sheet.getRange("Q"+row).setFontColor("#FF0000");
+  }
+
+}
+
+function onFormSubmit(){
+  calcular();
+}
